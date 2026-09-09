@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#1B3A5C">
+<title>AI团队业绩每日看板</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+<style>
+/* ===== Design Tokens ===== */
+:root{
+  --brand-50:#EAF2FB;--brand-100:#C9DDF2;--brand-300:#7AAEDC;
+  --brand-500:#2E75B6;--brand-700:#1B3A5C;--brand-900:#0F1F36;
+  --green-500:#10B981;--green-50:#E6F9F1;
+  --orange-500:#F59E0B;--orange-50:#FEF3E2;
+  --red-500:#EF4444;--red-50:#FEE7E7;
+  --blue-50:#E8F0FE;
+  --ink-900:#0F172A;--ink-700:#334155;--ink-500:#64748B;
+  --ink-300:#CBD5E1;--ink-200:#E2E8F0;--ink-100:#F1F5F9;--ink-50:#F8FAFC;
+  --bg:#F4F6FB;--card:#FFFFFF;
+  --radius-sm:8px;--radius-md:14px;--radius-lg:18px;--radius-xl:22px;
+  --shadow-xs:0 1px 2px rgba(15,23,42,.04);
+  --shadow-sm:0 2px 6px rgba(15,23,42,.05), 0 1px 2px rgba(15,23,42,.04);
+  --shadow-md:0 6px 18px rgba(15,23,42,.06), 0 2px 4px rgba(15,23,42,.04);
+  --t-fast:150ms cubic-bezier(.4,0,.2,1);--t-mid:280ms cubic-bezier(.4,0,.2,1);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei','Helvetica Neue',Arial,sans-serif;
+  background:
+    radial-gradient(1200px 600px at 100% -10%,rgba(46,117,182,.10),transparent 60%),
+    radial-gradient(900px 500px at 0% 0%,rgba(16,185,129,.08),transparent 60%),
+    var(--bg);
+  color:var(--ink-900);-webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;line-height:1.5;font-size:14px;
+  word-break:break-word;overflow-x:hidden;
+}
+.header{
+  background:linear-gradient(135deg,#0F1F36 0%,#1B3A5C 55%,#2E75B6 100%);
+  color:#fff;padding:28px 36px;display:flex;justify-content:space-between;
+  align-items:center;flex-wrap:wrap;gap:16px;position:relative;overflow:hidden;
+}
+.header::after{
+  content:"";position:absolute;inset:0;
+  background:
+    radial-gradient(400px 200px at 90% 110%,rgba(255,255,255,.10),transparent 60%),
+    radial-gradient(300px 200px at 10% -20%,rgba(255,255,255,.08),transparent 60%);
+  pointer-events:none;
+}
+.header-left{position:relative;z-index:1;}
+.header-left h1{
+  font-size:24px;font-weight:700;letter-spacing:.5px;
+  display:flex;align-items:center;gap:10px;
+}
+.header-left h1 .logo-dot{
+  display:inline-block;width:10px;height:10px;border-radius:50%;
+  background:linear-gradient(135deg,#10B981,#2E75B6);
+  box-shadow:0 0 0 3px rgba(255,255,255,.18);
+}
+.header-left p{
+  font-size:13px;opacity:.78;margin-top:6px;
+  display:flex;align-items:center;gap:6px;flex-wrap:wrap;
+}
+.header-left p .sep{opacity:.4;}
+.header-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px;position:relative;z-index:1;}
+.refresh-btn{
+  background:rgba(255,255,255,.14);color:#fff;
+  border:1px solid rgba(255,255,255,.32);padding:10px 20px;border-radius:999px;
+  font-size:13px;font-weight:500;cursor:pointer;transition:all var(--t-fast);
+  display:flex;align-items:center;gap:8px;backdrop-filter:blur(8px);
+}
+.refresh-btn:hover{background:rgba(255,255,255,.24);border-color:rgba(255,255,255,.6);transform:translateY(-1px);}
+.refresh-btn:active{transform:scale(.97);}
+.refresh-btn .icon{display:inline-block;transition:transform var(--t-mid);}
+.refresh-btn.spinning .icon{animation:spin .8s linear infinite;}
+@keyframes spin{from{transform:rotate(0);}to{transform:rotate(360deg);}}
+.last-update{font-size:11px;color:rgba(255,255,255,.65);display:flex;align-items:center;gap:6px;}
+.last-update::before{
+  content:"";width:6px;height:6px;border-radius:50%;
+  background:#10B981;box-shadow:0 0 6px #10B981;
+  animation:pulse 1.6s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+.container{max-width:1500px;margin:0 auto;padding:24px 28px 40px;}
+.kpi-row{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin-bottom:22px;}
+.kpi-card{
+  background:var(--card);border-radius:var(--radius-md);padding:18px 16px;
+  box-shadow:var(--shadow-sm);position:relative;overflow:hidden;
+  border:1px solid var(--ink-200);transition:transform var(--t-fast),box-shadow var(--t-fast);
+}
+.kpi-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);}
+.kpi-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--brand-500);}
+.kpi-card.kpi-green::before{background:var(--green-500);}
+.kpi-card.kpi-orange::before{background:var(--orange-500);}
+.kpi-card.kpi-red::before{background:var(--red-500);}
+.kpi-card.kpi-blue::before{background:var(--brand-500);}
+.kpi-card.kpi-primary{
+  background:linear-gradient(135deg,#0F1F36 0%,#1B3A5C 100%);
+  color:#fff;border:none;
+}
+.kpi-card.kpi-primary .label{color:rgba(255,255,255,.7);}
+.kpi-card.kpi-primary .value{color:#fff;}
+.kpi-card.kpi-primary .sub{color:rgba(255,255,255,.6);}
+.kpi-card.kpi-primary::before{background:linear-gradient(180deg,#10B981,#2E75B6);}
+.kpi-card .label{font-size:12px;color:var(--ink-500);margin-bottom:6px;display:flex;align-items:center;gap:6px;font-weight:500;}
+.kpi-card .value{font-size:26px;font-weight:700;letter-spacing:-.5px;line-height:1.15;display:flex;align-items:baseline;gap:4px;}
+.kpi-card .value .unit{font-size:13px;font-weight:500;color:var(--ink-500);}
+.kpi-card.kpi-primary .value .unit{color:rgba(255,255,255,.7);}
+.kpi-card .sub{font-size:11px;color:var(--ink-500);margin-top:6px;line-height:1.4;}
+.c-green{color:var(--green-500);}.c-blue{color:var(--brand-500);}.c-orange{color:var(--orange-500);}.c-red{color:var(--red-500);}
+.card{
+  background:var(--card);border-radius:var(--radius-lg);padding:20px 22px;
+  box-shadow:var(--shadow-sm);border:1px solid var(--ink-200);margin-bottom:20px;
+}
+.card-title{
+  font-size:15px;font-weight:600;color:var(--ink-900);margin-bottom:14px;
+  display:flex;align-items:center;gap:8px;
+}
+.card-title::before{
+  content:"";width:4px;height:16px;border-radius:2px;
+  background:linear-gradient(180deg,var(--brand-500),var(--green-500));
+}
+.chart-card canvas{max-height:300px;}
+.time-bar-row{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+.time-bar-label{width:84px;font-size:12px;color:var(--ink-700);text-align:right;flex-shrink:0;font-weight:500;}
+.time-bar{flex:1;height:28px;background:var(--ink-100);border-radius:14px;overflow:visible;position:relative;}
+.time-bar-fill{
+  height:100%;border-radius:14px;display:flex;align-items:center;justify-content:flex-end;
+  padding-right:10px;font-size:12px;color:#fff;font-weight:600;
+  box-shadow:inset 0 -2px 0 rgba(0,0,0,.08);
+  transition:width .6s cubic-bezier(.4,0,.2,1);
+}
+.time-bar-line{
+  position:absolute;top:-6px;bottom:-6px;width:2px;background:var(--ink-900);
+  border-radius:2px;z-index:2;
+}
+.time-bar-line::before,.time-bar-line::after{
+  content:"";position:absolute;left:-3px;width:8px;height:2px;background:var(--ink-900);
+}
+.time-bar-line::before{top:0;}
+.time-bar-line::after{bottom:0;}
+.time-bar-gap{font-size:12px;font-weight:600;width:118px;flex-shrink:0;display:flex;align-items:center;gap:4px;}
+.time-summary{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:14px;padding-top:14px;
+  border-top:1px dashed var(--ink-200);
+}
+.time-summary-item{
+  text-align:center;padding:8px;background:linear-gradient(180deg,var(--ink-50),transparent);
+  border-radius:10px;
+}
+.time-summary-item .ts-val{font-size:18px;font-weight:700;letter-spacing:-.3px;}
+.time-summary-item .ts-label{font-size:11px;color:var(--ink-500);margin-top:2px;}
+.chart-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:20px;}
+.prov-rank-list{display:flex;flex-direction:column;gap:8px;}
+.prov-rank-item{
+  padding:12px 16px;border-radius:12px;
+  background:linear-gradient(135deg,var(--ink-50),#fff);
+  border:1px solid var(--ink-200);
+  display:flex;align-items:center;flex-wrap:wrap;gap:10px;
+  transition:all var(--t-fast);
+}
+.prov-rank-item:hover{border-color:var(--brand-300);box-shadow:var(--shadow-xs);}
+.prov-rank-medal{
+  width:32px;height:32px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;color:#fff;font-size:13px;flex-shrink:0;
+  background:linear-gradient(135deg,#94a3b8,#64748b);
+}
+.prov-rank-item:nth-child(1) .prov-rank-medal{background:linear-gradient(135deg,#FBBF24,#F59E0B);}
+.prov-rank-item:nth-child(2) .prov-rank-medal{background:linear-gradient(135deg,#CBD5E1,#94A3B8);}
+.prov-rank-item .pr-name{font-weight:600;font-size:14px;color:var(--ink-900);}
+.prov-rank-item .pr-leader{font-size:12px;color:var(--ink-500);}
+.prov-rank-item .pr-info{font-size:12px;color:var(--ink-700);margin-left:auto;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.prov-rank-item .pr-info .pos{color:var(--green-500);font-weight:600;}
+.prov-rank-item .pr-info .neg{color:var(--red-500);font-weight:600;}
+.prov-rank-item .pr-info .neutral{color:var(--ink-500);font-weight:500;}
+.province-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:20px;}
+.province-card{
+  background:var(--card);border-radius:var(--radius-lg);padding:18px;
+  box-shadow:var(--shadow-sm);border:1px solid var(--ink-200);
+}
+.province-card h3{font-size:14px;color:var(--ink-900);margin-bottom:12px;font-weight:600;display:flex;align-items:center;gap:8px;}
+.province-card h3 small{font-size:11px;color:var(--ink-500);font-weight:400;}
+.province-metrics{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;}
+.prov-metric{text-align:center;padding:8px 4px;background:var(--ink-50);border-radius:8px;}
+.prov-metric .pm-val{font-size:14px;font-weight:700;line-height:1.2;}
+.prov-metric .pm-val small{font-size:9px;font-weight:500;color:var(--ink-500);}
+.prov-metric .pm-label{font-size:10px;color:var(--ink-500);margin-top:3px;line-height:1.2;}
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.table-wrap>table{min-width:100%;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+table th,table td{padding:10px 8px;text-align:center;border-bottom:1px solid var(--ink-100);white-space:nowrap;}
+table th{
+  background:linear-gradient(180deg,var(--brand-700),var(--brand-500));
+  color:#fff;font-weight:500;font-size:12px;position:sticky;top:0;z-index:1;letter-spacing:.3px;
+}
+table th:first-child{border-top-left-radius:10px;}
+table th:last-child{border-top-right-radius:10px;}
+table.team-table,table.prov-table{table-layout:fixed;}
+.team-table col.c-name{width:8%;}
+.team-table col.c-num{width:8.5%;}
+.team-table col.c-rate{width:8.5%;}
+.team-table col.c-rank{width:7.25%;}
+.team-table col.c-coef{width:8.5%;}
+.prov-table col.c-name{width:8%;}
+.prov-table col.c-num{width:8%;}
+.prov-table col.c-rate{width:8%;}
+.prov-table col.c-rank{width:4.5%;}
+.prov-table col.c-coef{width:4%;}
+table tbody tr{transition:background var(--t-fast);}
+table tbody tr:nth-child(even) td{background:var(--ink-50);}
+table tbody tr:hover td{background:var(--blue-50);}
+table td.c-name{font-weight:600;color:var(--ink-900);white-space:nowrap;}
+table.team-table td.c-name,.prov-table td.c-name{white-space:nowrap;}
+.badge{display:inline-block;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:600;}
+.badge-green{background:var(--green-50);color:var(--green-500);}
+.badge-blue{background:var(--blue-50);color:var(--brand-500);}
+.badge-red{background:var(--red-50);color:var(--red-500);}
+.badge-orange{background:var(--orange-50);color:var(--orange-500);}
+.neg{color:var(--red-500);font-weight:600;}
+.pos{color:var(--green-500);font-weight:600;}
+.coef-badge{display:inline-block;padding:2px 7px;border-radius:6px;font-size:10px;font-weight:700;}
+.coef-high{background:var(--green-50);color:var(--green-500);}
+.coef-mid{background:var(--blue-50);color:var(--brand-500);}
+.coef-low{background:var(--red-50);color:var(--red-500);}
+.supplier-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
+.supplier-half{
+  background:linear-gradient(180deg,var(--ink-50),#fff);
+  border-radius:12px;padding:14px;border:1px solid var(--ink-200);
+}
+.supplier-half h4{
+  font-size:13px;color:var(--ink-900);margin-bottom:10px;font-weight:600;
+  display:flex;align-items:center;gap:6px;
+}
+.supplier-half h4::before{content:"";width:3px;height:14px;border-radius:2px;background:var(--green-500);}
+.supplier-half.bad h4::before{background:var(--red-500);}
+.supplier-half table{font-size:11px;}
+.supplier-half table th{font-size:10px;padding:6px 4px;background:linear-gradient(180deg,var(--ink-700),var(--ink-500));}
+.supplier-half table td{padding:6px 4px;}
+.footer{text-align:center;padding:24px 16px;color:var(--ink-500);font-size:12px;}
+.footer::before{
+  content:"";display:block;width:60px;height:2px;
+  background:linear-gradient(90deg,transparent,var(--ink-300),transparent);
+  margin:0 auto 12px;
+}
+.mobile-list{display:none;}
+.mobile-list-item{
+  background:var(--card);border-radius:12px;padding:14px;
+  box-shadow:var(--shadow-xs);border:1px solid var(--ink-200);margin-bottom:10px;
+}
+.mobile-list-item .mli-head{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:8px;padding-bottom:8px;border-bottom:1px dashed var(--ink-200);
+}
+.mobile-list-item .mli-name{font-weight:700;font-size:15px;color:var(--ink-900);}
+.mobile-list-item .mli-rate{font-size:18px;font-weight:700;padding:4px 10px;border-radius:8px;}
+.mobile-list-item .mli-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px;}
+.mobile-list-item .mli-cell{display:flex;flex-direction:column;gap:2px;padding:6px 8px;background:var(--ink-50);border-radius:6px;}
+.mobile-list-item .mli-cell.full{grid-column:1/-1;}
+.mobile-list-item .mli-label{color:var(--ink-500);font-size:10px;}
+.mobile-list-item .mli-val{color:var(--ink-900);font-weight:600;font-size:13px;}
+.mobile-list-item .mli-rate-row{display:flex;align-items:center;gap:6px;padding:6px 8px;background:var(--ink-50);border-radius:6px;margin-top:6px;}
+.mobile-list-item .mli-rate-row .mli-val{font-size:13px;}
+@media(max-width:1100px){.kpi-row{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:900px){
+  .chart-grid{grid-template-columns:1fr;}
+  .province-grid{grid-template-columns:1fr;}
+  .supplier-grid{grid-template-columns:1fr;}
+  .province-metrics{grid-template-columns:repeat(6,1fr);}
+  .time-summary{grid-template-columns:repeat(2,1fr);}
+}
+@media(max-width:640px){
+  body{font-size:13px;}
+  .header{padding:18px 16px;flex-direction:column;align-items:stretch;gap:12px;}
+  .header-left h1{font-size:18px;}
+  .header-left p{font-size:11px;}
+  .header-right{align-items:stretch;}
+  .refresh-btn{justify-content:center;width:100%;padding:10px 18px;}
+  .last-update{justify-content:center;}
+  .container{padding:14px 12px 28px;}
+  .kpi-row{grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px;}
+  .kpi-card{padding:12px;border-radius:12px;}
+  .kpi-card .label{font-size:10.5px;margin-bottom:4px;}
+  .kpi-card .value{font-size:18px;letter-spacing:-.3px;}
+  .kpi-card .value .unit{font-size:10px;}
+  .kpi-card .sub{font-size:10px;margin-top:4px;line-height:1.3;}
+  .card{padding:14px;border-radius:14px;margin-bottom:14px;}
+  .card-title{font-size:13px;margin-bottom:10px;}
+  .time-bar-row{gap:6px;margin-bottom:8px;}
+  .time-bar-label{width:54px;font-size:10px;}
+  .time-bar{height:18px;}
+  .time-bar-fill{font-size:9px;padding-right:5px;border-radius:9px;}
+  .time-bar-line{top:-4px;bottom:-4px;}
+  .time-bar-gap{font-size:10px;width:64px;}
+  .time-summary{grid-template-columns:repeat(2,1fr);gap:6px;margin-top:10px;padding-top:10px;}
+  .time-summary-item{padding:6px;}
+  .time-summary-item .ts-val{font-size:14px;}
+  .time-summary-item .ts-label{font-size:9px;}
+  .chart-card canvas{max-height:200px !important;}
+  .prov-rank-item{padding:10px 12px;gap:8px;}
+  .prov-rank-medal{width:26px;height:26px;font-size:11px;}
+  .prov-rank-item .pr-name{font-size:13px;}
+  .prov-rank-item .pr-info{font-size:11px;width:100%;margin-left:0;}
+  .province-metrics{grid-template-columns:repeat(3,1fr);gap:6px;}
+  .prov-metric{padding:6px 2px;}
+  .prov-metric .pm-val{font-size:11px;}
+  .prov-metric .pm-val small{font-size:8px;}
+  .prov-metric .pm-label{font-size:8px;}
+  .mobile-list{display:none;}
+}
+@media(max-width:768px){
+  .team-table,.prov-table{font-size:10px;}
+  .team-table th,.team-table td,.prov-table th,.prov-table td{padding:5px 3px;white-space:nowrap;overflow:hidden;}
+  .team-table th,.prov-table th{font-size:9px;}
+}
+@media(max-width:420px){
+  .team-table,.prov-table{font-size:8px;}
+  .team-table th,.team-table td,.prov-table th,.prov-table td{padding:3px 1px;}
+  .team-table th,.prov-table th{font-size:7px;}
+}
+@media(max-width:360px){
+  .kpi-row{gap:8px;}
+  .kpi-card{padding:10px 8px;}
+  .kpi-card .value{font-size:16px;}
+  .kpi-card .label{font-size:10px;}
+  .kpi-card .sub{font-size:9px;}
+  .time-bar-label{width:46px;font-size:9px;}
+  .time-bar-gap{font-size:9px;width:54px;}
+  .province-metrics{grid-template-columns:repeat(2,1fr);}
+  .mobile-list-item .mli-grid{grid-template-columns:1fr;}
+  .mobile-list-item .mli-name{font-size:14px;}
+  .mobile-list-item .mli-rate{font-size:15px;}
+  .team-table,.prov-table{font-size:7px;}
+  .prov-table{font-size:6px;}
+  .team-table th,.team-table td,.prov-table th,.prov-table td{padding:2px 1px;}
+  .team-table th,.prov-table th{font-size:6px;}
+  .prov-table td,.prov-table th{text-overflow:ellipsis;}
+}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="header-left">
+    <h1><span class="logo-dot"></span>AI团队业绩每日看板</h1>
+    <p>数据来源:观远BI · 运营绩效看板<span class="sep">·</span>2026年9月<span class="sep">·</span>已过8天</p>
+  </div>
+  <div class="header-right">
+    <button class="refresh-btn" onclick="refreshData()" id="refreshBtn">
+      <span class="icon">🔄</span><span>刷新数据</span>
+    </button>
+    <div class="last-update" id="lastUpdate">最后刷新: 2026-09-08 23:26</div>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="kpi-row" id="kpiRow"></div>
+
+  <div class="card">
+    <div class="card-title">⏱ 时间进度 vs 达成进度(含预估线 & 0.7倍基准线)</div>
+    <div class="time-bar-row">
+      <span class="time-bar-label">时间进度</span>
+      <div class="time-bar"><div class="time-bar-fill" style="width:26.7%;background:linear-gradient(90deg,var(--brand-700),var(--brand-300))">26.7%</div></div>
+      <span class="time-bar-gap c-blue">9月8日 / 30天</span>
+    </div>
+    <div class="time-bar-row">
+      <span class="time-bar-label">0.7倍基准</span>
+      <div class="time-bar"><div class="time-bar-fill" style="width:18.7%;background:linear-gradient(90deg,#34D399,#10B981)">18.7%</div></div>
+      <span class="time-bar-gap c-green">调整后达标线</span>
+    </div>
+    <div class="time-bar-row">
+      <span class="time-bar-label">当前达成</span>
+      <div class="time-bar"><div class="time-bar-fill" style="width:19.9%;background:linear-gradient(90deg,#F59E0B,#FBBF24)">19.9%</div><div class="time-bar-line" style="left:18.7%"></div></div>
+      <span class="time-bar-gap c-orange">vs 0.7基准 +1.2pp</span>
+    </div>
+    <div class="time-bar-row">
+      <span class="time-bar-label">预估完成</span>
+      <div class="time-bar"><div class="time-bar-fill" style="width:74.6%;background:linear-gradient(90deg,#EF4444,#F87171)">74.6%</div></div>
+      <span class="time-bar-gap c-red">预估全月</span>
+    </div>
+    <div class="time-summary">
+      <div class="time-summary-item"><div class="ts-val c-red">1,857<span class="unit">万</span></div><div class="ts-label">现金流缺口</div></div>
+      <div class="time-summary-item"><div class="ts-val c-blue">20,340<span class="unit">万</span></div><div class="ts-label">预估月末金额</div></div>
+      <div class="time-summary-item"><div class="ts-val c-red">74.6%</div><div class="ts-label">预估达成率</div></div>
+      <div class="time-summary-item"><div class="ts-val c-red">22天</div><div class="ts-label">剩22天追6,931万</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🏅 省区排名 — 当月达成率 & 同期对比（全18省区排名）</div>
+    <div class="prov-rank-list" id="provRankList"></div>
+  </div>
+
+  <div class="province-grid" id="provinceGrid"></div>
+
+  <div class="card table-card">
+    <div class="card-title">🗺 省区汇总明细表(2026年9月)</div>
+    <div class="table-wrap">
+      <table class="prov-table">
+        <colgroup>
+          <col class="c-name"><col class="c-name"><col class="c-num"><col class="c-num">
+          <col class="c-rate"><col class="c-rate"><col class="c-rank"><col class="c-rate">
+          <col class="c-rank"><col class="c-num"><col class="c-rank"><col class="c-coef">
+          <col class="c-num"><col class="c-rank"><col class="c-coef">
+        </colgroup>
+        <thead><tr>
+          <th>省区</th><th>负责人</th><th>当月现金(万)</th><th>目标(万)</th>
+          <th>达成率</th><th>预估</th><th>达成排名</th><th>同期对比</th><th>环比排名</th>
+          <th>稀缺增量</th><th>排名</th><th>系数</th>
+          <th>优质增量</th><th>排名</th><th>系数</th>
+        </tr></thead>
+        <tbody id="provTableBody"></tbody>
+      </table>
+    </div>
+    <div class="mobile-list" id="provMobileList"></div>
+  </div>
+
+  <div class="card table-card">
+    <div class="card-title">📋 运营人员明细表(2026年9月)</div>
+    <div class="table-wrap">
+      <table class="team-table">
+        <colgroup>
+          <col class="c-name"><col class="c-num"><col class="c-num"><col class="c-num">
+          <col class="c-rate"><col class="c-rate"><col class="c-num">
+          <col class="c-rank"><col class="c-coef"><col class="c-num"><col class="c-rank"><col class="c-coef">
+        </colgroup>
+        <thead><tr>
+          <th>店铺运营</th><th>认领商业数</th><th>当月现金(万)</th><th>目标(万)</th>
+          <th>达成率</th><th>预估</th><th>稀缺增量</th>
+          <th>排名</th><th>系数</th><th>优质增量</th><th>排名</th><th>系数</th>
+        </tr></thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+    <div class="mobile-list" id="teamMobileList"></div>
+  </div>
+
+  <div class="card chart-card">
+    <div class="card-title">📦 稀缺 vs 优质品次增量</div>
+    <canvas id="chartProduct"></canvas>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📦 商业货盘每日情况 — 稀缺SKU数 TOP10（月度数据）</div>
+    <div class="supplier-grid" id="supplierXqGrid"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">⭐ 商业货盘每日情况 — 优质品次增量 TOP10 & BOTTOM10（月度数据）</div>
+    <div class="supplier-grid" id="supplierYzGrid"></div>
+  </div>
+
+  <div class="footer">AI团队业绩每日看板 · 自动生成于 2026-09-08 23:26 · 观远BI运营绩效看板</div>
+</div>
+
+<script>
+var teamData = [{"name": "张常绿", "cash": 911.0, "target": 3937.0, "rate": 23.1, "prev_cash": 31425564.45, "bky_increment": -1.37, "bky_rank": 0, "yz_increment": -151, "yz_rank": "-", "bky_coef": 0, "yz_coef": 0, "claims": 10, "mom": -71.0, "proj_rate": 86.8}, {"name": "李月", "cash": 1106.0, "target": 4911.0, "rate": 22.5, "prev_cash": 35326441.18, "bky_increment": 11.0, "bky_rank": 18, "yz_increment": 185, "yz_rank": "7", "bky_coef": 1, "yz_coef": 1.5, "claims": 20, "mom": -68.7, "proj_rate": 84.5}, {"name": "梁芷轩", "cash": 360.0, "target": 1754.0, "rate": 20.5, "prev_cash": 10376364.37, "bky_increment": -0.56, "bky_rank": 6, "yz_increment": 902, "yz_rank": "1", "bky_coef": 0, "yz_coef": 1.3, "claims": 90, "mom": -65.3, "proj_rate": 77.0}, {"name": "温小玲", "cash": 743.0, "target": 3765.0, "rate": 19.7, "prev_cash": 25139920.22, "bky_increment": 33.76, "bky_rank": 4, "yz_increment": 480, "yz_rank": "2", "bky_coef": 1.5, "yz_coef": 1.5, "claims": 18, "mom": -70.5, "proj_rate": 74.0}, {"name": "孙培杰", "cash": 330.0, "target": 1704.0, "rate": 19.4, "prev_cash": 11102205.68, "bky_increment": 17.13, "bky_rank": 4, "yz_increment": -15, "yz_rank": "15", "bky_coef": 1, "yz_coef": 0, "claims": 80, "mom": -70.3, "proj_rate": 72.6}, {"name": "曾超", "cash": 268.0, "target": 1431.0, "rate": 18.7, "prev_cash": 9042696.02, "bky_increment": -7.56, "bky_rank": 0, "yz_increment": 51, "yz_rank": "-", "bky_coef": 0, "yz_coef": 0, "claims": 7, "mom": -70.3, "proj_rate": 70.2}, {"name": "张温馨", "cash": 505.0, "target": 2768.0, "rate": 18.2, "prev_cash": 19256250.47, "bky_increment": 6.27, "bky_rank": 30, "yz_increment": 58, "yz_rank": "11", "bky_coef": 0.3, "yz_coef": 1, "claims": 19, "mom": -73.8, "proj_rate": 68.4}, {"name": "陈孝斌", "cash": 699.0, "target": 3922.0, "rate": 17.8, "prev_cash": 26041240.84, "bky_increment": -6.84, "bky_rank": 9, "yz_increment": 10, "yz_rank": "15", "bky_coef": 0, "yz_coef": 1, "claims": 24, "mom": -73.2, "proj_rate": 66.8}, {"name": "林剑武", "cash": 462.0, "target": 2714.0, "rate": 17.0, "prev_cash": 16348039.06, "bky_increment": 8.62, "bky_rank": 35, "yz_increment": 236, "yz_rank": "6", "bky_coef": 0, "yz_coef": 0.5, "claims": 23, "mom": -71.8, "proj_rate": 63.8}];
+var provData = [{"name": "粤东+广西", "负责人": "曾超", "cash": 2184.0, "target": 12257.0, "rate": 17.8, "prev_rate": 69.5, "prev_same_rate": 17.9, "bky_inc": 27.07, "yz_inc": 172, "bky_coef": 1, "yz_coef": 1, "bky_rank": 10, "yz_rank": "6", "rate_rank": 16, "mom_rank": 16, "mom_change": -0.1, "proj_rate": 66.8}, {"name": "粤西", "负责人": "张常绿", "cash": 3240.0, "target": 15014.0, "rate": 21.6, "prev_rate": 77.3, "prev_same_rate": 19.9, "bky_inc": 36.77, "yz_inc": 1515, "bky_coef": 1, "yz_coef": 1.5, "bky_rank": 7, "yz_rank": "1", "rate_rank": 1, "mom_rank": 11, "mom_change": 1.7, "proj_rate": 80.9}];
+var supplierXqBky = {"top": [{"name": "百年旗舰店", "prov": "粤西", "op": "张常绿", "inc": 0}, {"name": "大康华", "prov": "粤西", "op": "-", "inc": 0}, {"name": "东莞天德", "prov": "粤东", "op": "-", "inc": 0}, {"name": "药云采", "prov": "粤东", "op": "陈孝斌", "inc": 0}, {"name": "古方琪笑", "prov": "粤西", "op": "-", "inc": 0}, {"name": "深圳俊龙", "prov": "粤东", "op": "-", "inc": 0}, {"name": "药速配", "prov": "粤东", "op": "李月", "inc": 0}, {"name": "深圳明华堂", "prov": "粤东", "op": "孙培杰", "inc": 0}, {"name": "广州龙祥", "prov": "粤西", "op": "温小玲", "inc": 0}, {"name": "广州锦航", "prov": "粤西", "op": "张温馨", "inc": 0}]};
+var supplierXqYz  = {"top": [{"name": "百年旗舰店", "prov": "粤西", "op": "张常绿", "inc": 0}, {"name": "大康华", "prov": "粤西", "op": "-", "inc": 0}, {"name": "东莞天德", "prov": "粤东", "op": "-", "inc": 0}, {"name": "药云采", "prov": "粤东", "op": "陈孝斌", "inc": 0}, {"name": "古方琪笑", "prov": "粤西", "op": "-", "inc": 0}, {"name": "深圳俊龙", "prov": "粤东", "op": "-", "inc": 0}, {"name": "药速配", "prov": "粤东", "op": "李月", "inc": 0}, {"name": "深圳明华堂", "prov": "粤东", "op": "孙培杰", "inc": 0}, {"name": "广州龙祥", "prov": "粤西", "op": "温小玲", "inc": 0}, {"name": "广州锦航", "prov": "粤西", "op": "张温馨", "inc": 0}]};
+var supplierYz    = {"top": [{"name": "药正源", "prov": "广西", "op": "林剑武", "inc": 212}, {"name": "好药司", "prov": "粤东", "op": "陈孝斌", "inc": 106}, {"name": "广东百康药业", "prov": "粤西", "op": "张温馨", "inc": 88}, {"name": "大畅药业", "prov": "粤东", "op": "孙培杰", "inc": 45}, {"name": "药满意", "prov": "粤西", "op": "李月", "inc": 44}, {"name": "御和康", "prov": "粤东", "op": "温小玲", "inc": 40}, {"name": "刚巧药旗舰店", "prov": "粤西", "op": "梁芷轩", "inc": 40}, {"name": "嘉洲云药房", "prov": "粤东", "op": "陈孝斌", "inc": 33}, {"name": "都市百姓", "prov": "粤西", "op": "温小玲", "inc": 30}, {"name": "厚朴堂", "prov": "粤东", "op": "孙培杰", "inc": 25}], "bottom": [{"name": "多惠捷", "prov": "粤东", "op": "曾超", "inc": -139}, {"name": "药集云汇", "prov": "粤东", "op": "陈孝斌", "inc": -118}, {"name": "[亮健药业]帮找药", "prov": "粤西", "op": "张常绿", "inc": -103}, {"name": "药集中旗舰店", "prov": "粤东", "op": "陈孝斌", "inc": -89}, {"name": "众药汇", "prov": "粤东", "op": "陈孝斌", "inc": -84}, {"name": "至远旗舰店", "prov": "粤西", "op": "张常绿", "inc": -72}, {"name": "药集市", "prov": "粤西", "op": "张温馨", "inc": -70}, {"name": "天慈健", "prov": "粤东", "op": "陈孝斌", "inc": -66}, {"name": "医药直通车", "prov": "粤西", "op": "张常绿", "inc": -58}, {"name": "柏恩医药", "prov": "粤西", "op": "张常绿", "inc": -51}]};
+
+var blue='#2E75B6',green='#10B981',orange='#F59E0B',red='#EF4444',ink700='#334155';
+var names=teamData.map(function(d){return d.name;});
+
+/* ===== KPI cards (with new design system classes) ===== */
+(function(){
+  var cashColor = total_rate_var = '19.9';
+  var kpis=[
+    {label:'团队当月现金',value:'5,424',unit:'万',sub:'目标 27,271万',cls:'kpi-primary'},
+    {label:'当前达成率',value:'19.9',unit:'%',sub:'距目标差 21,847万',cls:'kpi-orange'},
+    {label:'日均现金',value:'678',unit:'万',sub:'日均 × 8天 = 5,424万',cls:'kpi-blue'},
+    {label:'预估达成率',value:'74.6',unit:'%',sub:'预估全月 20,340 / 27,271万',cls:'kpi-red'},
+    {label:'0.7倍基准线',value:'18.7',unit:'%',sub:'vs 达成率 +1.2pp',cls:'kpi-green'},
+    {label:'现金缺口',value:'1,857',unit:'万',sub:'落后 -6.8pp',cls:'kpi-red'}
+  ];
+  var h='';
+  kpis.forEach(function(k){
+    h+='<div class="kpi-card '+k.cls+'">'+
+      '<div class="label">'+k.label+'</div>'+
+      '<div class="value">'+k.value+'<span class="unit">'+k.unit+'</span></div>'+
+      '<div class="sub">'+k.sub+'</div></div>';
+  });
+  document.getElementById('kpiRow').innerHTML=h;
+})();
+
+/* ===== Refresh button ===== */
+function refreshData(){
+  var btn=document.getElementById('refreshBtn');
+  var status=document.getElementById('lastUpdate');
+  
+  // Disable button, show progress
+  btn.classList.add('spinning');
+  btn.innerHTML='<span class="icon">🔄</span><span>连接服务器...</span>';
+  btn.disabled=true;
+  
+  // Start refresh pipeline
+  fetch('/api/refresh',{method:'POST'})
+  .then(function(r){
+    if(r.status===409){
+      btn.classList.remove('spinning');
+      btn.innerHTML='<span class="icon">🔄</span><span>刷新数据</span>';
+      btn.disabled=false;
+      status.textContent='⚠️ 已有刷新任务进行中';
+      return;
+    }
+    if(!r.ok)throw new Error('请求失败('+r.status+')');
+    
+    // Poll status until done
+    var dots=0;
+    var poll=setInterval(function(){
+      fetch('/api/status')
+      .then(function(sr){return sr.json();})
+      .then(function(s){
+        dots=(dots+1)%4;
+        var dd='.'.repeat(dots);
+        if(s.status==='running'){
+          status.textContent=s.step+dd;
+          btn.innerHTML='<span class="icon">🔄</span><span>'+s.step+'</span>';
+        }else if(s.status==='done'){
+          clearInterval(poll);
+          status.textContent='✅ 刷新完成! 即将重载...';
+          btn.classList.remove('spinning');
+          btn.innerHTML='<span class="icon">✅</span><span>刷新完成</span>';
+          setTimeout(function(){location.reload(true);},800);
+        }else if(s.status==='error'){
+          clearInterval(poll);
+          btn.classList.remove('spinning');
+          btn.innerHTML='<span class="icon">❌</span><span>刷新失败</span>';
+          btn.disabled=false;
+          status.textContent='❌ '+(s.error||'未知错误');
+          setTimeout(function(){
+            btn.innerHTML='<span class="icon">🔄</span><span>刷新数据</span>';
+            status.textContent='最后刷新: 2026-09-08 23:26';
+          },5000);
+        }
+      }).catch(function(){
+        clearInterval(poll);
+        btn.classList.remove('spinning');
+        btn.innerHTML='<span class="icon">🔄</span><span>刷新数据</span>';
+        btn.disabled=false;
+        status.textContent='⚠️ 无法连接服务器';
+      });
+    },1500);
+  })
+  .catch(function(e){
+    btn.classList.remove('spinning');
+    btn.innerHTML='<span class="icon">🔄</span><span>刷新数据</span>';
+    btn.disabled=false;
+    status.textContent='❌ 无法连接服务器 (本地服务器未启动?)';
+  });
+}
+
+/* ===== Province rank list ===== */
+(function(){
+  var list=document.getElementById('provRankList');
+  var h='';
+  provData.forEach(function(p,idx){
+    var arrow=p.mom_change>0?'↑':p.mom_change<0?'↓':'→';
+    var cls=p.mom_change>0?'pos':p.mom_change<0?'neg':'neutral';
+    h+='<div class="prov-rank-item">'+
+        '<div class="prov-rank-medal">'+(idx+1)+'</div>'+
+        '<div><div class="pr-name">'+p.name+'</div>'+
+        '<div class="pr-leader">负责人: '+p.负责人+'</div></div>'+
+        '<div class="pr-info">'+
+          '<span>达成率 <strong>'+p.rate+'%</strong> · 排名 <strong>#'+p.rate_rank+'</strong></span>'+
+          '<span class="'+cls+'">同期对比 '+arrow+p.mom_change.toFixed(1)+'pp (系统排名#'+p.mom_rank+')</span>'+
+        '</div></div>';
+  });
+  list.innerHTML=h;
+})();
+
+/* ===== Province cards (metrics) ===== */
+(function(){
+  var g=document.getElementById('provinceGrid');
+  var h='';
+  provData.forEach(function(p){
+    var rc=p.rate>=70?green:p.rate>=60?blue:red;
+    var momArrow=p.mom_change>0?'↑':p.mom_change<0?'↓':'→';
+    h+='<div class="province-card">'+
+        '<h3>'+p.name+' <small>· 负责人 '+p.负责人+'</small></h3>'+
+        '<div class="province-metrics">'+
+          '<div class="prov-metric"><div class="pm-val c-blue">'+p.cash+'<small>万</small></div><div class="pm-label">当月现金</div></div>'+
+          '<div class="prov-metric"><div class="pm-val" style="color:'+rc+'">'+p.rate+'%</div><div class="pm-label">达成率 #'+p.rate_rank+'</div></div>'+
+          '<div class="prov-metric"><div class="pm-val '+(p.mom_change>0?'c-green':'c-red')+'">'+momArrow+p.mom_change.toFixed(1)+'pp</div><div class="pm-label">同期对比 #'+p.mom_rank+'</div></div>'+
+          '<div class="prov-metric"><div class="pm-val" style="color:'+(p.proj_rate>=70?green:p.proj_rate>=60?blue:red)+'">'+(p.proj_rate||'-')+'%</div><div class="pm-label">预估达成率</div></div>'+
+          '<div class="prov-metric"><div class="pm-val">'+(p.bky_inc>=0?'+':'')+p.bky_inc+'<small>/系数'+p.bky_coef+'</small></div><div class="pm-label">稀缺 #'+p.bky_rank+'</div></div>'+
+          '<div class="prov-metric"><div class="pm-val">'+(p.yz_inc>=0?'+':'')+p.yz_inc+'<small>/系数'+p.yz_coef+'</small></div><div class="pm-label">优质 #'+p.yz_rank+'</div></div>'+
+        '</div></div>';
+  });
+  g.innerHTML=h;
+})();
+
+/* ===== Supplier TOP10 / BOTTOM10 ===== */
+function renderSupplier(containerId,data,valueKey,label){
+  var h='';
+  h+='<div class="supplier-half"><h4>🏆 '+label+'前10名</h4>'+
+     '<table><thead><tr><th>#</th><th>供应商</th><th>省份</th><th>运营</th><th>'+label+'</th></tr></thead><tbody>';
+  data.top.forEach(function(r,i){
+    h+='<tr><td>'+(i+1)+'</td><td style="text-align:left;font-weight:600">'+r.name+'</td><td>'+(r.prov||'-')+'</td><td>'+(r.op||'-')+'</td><td class="pos">+'+(r[valueKey])+'</td></tr>';
+  });
+  h+='</tbody></table></div>';
+
+  h+='<div class="supplier-half bad"><h4>⚠️ '+label+'后10名</h4>'+
+     '<table><thead><tr><th>#</th><th>供应商</th><th>省份</th><th>运营</th><th>'+label+'</th></tr></thead><tbody>';
+  data.bottom.forEach(function(r,i){
+    h+='<tr><td>'+(i+1)+'</td><td style="text-align:left;font-weight:600">'+r.name+'</td><td>'+(r.prov||'-')+'</td><td>'+(r.op||'-')+'</td><td class="neg">'+r[valueKey]+'</td></tr>';
+  });
+  h+='</tbody></table></div>';
+
+  document.getElementById(containerId).innerHTML=h;
+}
+function renderSupplierDualTop(containerId,data1,label1,data2,label2,valueKey){
+  var h='';
+  h+='<div class="supplier-half"><h4>🏆 '+label1+'前10名</h4>'+
+     '<table><thead><tr><th>#</th><th>供应商</th><th>省份</th><th>运营</th><th>'+label1+'</th></tr></thead><tbody>';
+  data1.top.forEach(function(r,i){
+    h+='<tr><td>'+(i+1)+'</td><td style="text-align:left;font-weight:600">'+r.name+'</td><td>'+(r.prov||'-')+'</td><td>'+(r.op||'-')+'</td><td class="pos">+'+(r[valueKey])+'</td></tr>';
+  });
+  h+='</tbody></table></div>';
+
+  h+='<div class="supplier-half"><h4>🏆 '+label2+'前10名</h4>'+
+     '<table><thead><tr><th>#</th><th>供应商</th><th>省份</th><th>运营</th><th>'+label2+'</th></tr></thead><tbody>';
+  data2.top.forEach(function(r,i){
+    h+='<tr><td>'+(i+1)+'</td><td style="text-align:left;font-weight:600">'+r.name+'</td><td>'+(r.prov||'-')+'</td><td>'+(r.op||'-')+'</td><td class="pos">+'+(r[valueKey])+'</td></tr>';
+  });
+  h+='</tbody></table></div>';
+
+  document.getElementById(containerId).innerHTML=h;
+}
+if(supplierXqBky && supplierXqYz){renderSupplierDualTop('supplierXqGrid',supplierXqBky,'包邮有效稀缺SKU数',supplierXqYz,'包邮优势稀缺SKU数','inc');}else{document.getElementById('supplierXqGrid').innerHTML='<div class="supplier-half"><p style="color:#999;text-align:center;padding:20px;">本月供应商数据暂未更新</p></div>';}
+if(supplierYz){renderSupplier('supplierYzGrid',supplierYz,'inc','优质品次增量');}else{document.getElementById('supplierYzGrid').innerHTML='<div class="supplier-half"><p style="color:#999;text-align:center;padding:20px;">本月供应商数据暂未更新</p></div>';}
+
+/* ===== Charts ===== */
+new Chart(document.getElementById('chartProduct'),{
+  type:'bar',
+  data:{labels:names,datasets:[
+    {label:'稀缺品次增量',data:teamData.map(function(d){return d.bky_increment==null?0:d.bky_increment;}),backgroundColor:blue,borderRadius:6,datalabels:{color:ink700,font:{size:9,weight:'bold'},anchor:'end',align:function(ctx){return ctx.dataset.data[ctx.dataIndex]>=0?'end':'start';},formatter:function(v){return v>=0?'+'+v:v;}}},
+    {label:'优质品次增量',data:teamData.map(function(d){return d.yz_increment==null?0:d.yz_increment;}),backgroundColor:orange,borderRadius:6,datalabels:{color:ink700,font:{size:9,weight:'bold'},anchor:'end',align:function(ctx){return ctx.dataset.data[ctx.dataIndex]>=0?'end':'start';},formatter:function(v){return v>=0?'+'+v:v;}}}
+  ]},
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{position:'top',labels:{font:{size:11},color:ink700,boxWidth:12,boxHeight:12,padding:12}}},
+    scales:{
+      y:{ticks:{font:{size:10},color:ink700},grid:{color:'#F1F5F9'}},
+      x:{ticks:{font:{size:10},color:ink700},grid:{display:false}}
+    }
+  }
+});
+
+/* ===== Coef badge & rate class ===== */
+function coefBadge(v){
+  if(v===0||v==='0'||v==='-')return '<span class="coef-badge coef-low">0</span>';
+  if(v===0.5||v==='0.5')return '<span class="coef-badge coef-mid">0.5</span>';
+  if(v===1||v==='1')return '<span class="coef-badge coef-mid">1</span>';
+  if(v===1.3||v==='1.3')return '<span class="coef-badge coef-mid">1.3</span>';
+  if(v===1.5||v==='1.5')return '<span class="coef-badge coef-high">1.5</span>';
+  if(v===2||v==='2')return '<span class="coef-badge coef-high">2</span>';
+  return '<span class="coef-badge coef-low">'+v+'</span>';
+}
+function rateClass(rate){
+  if(rate>=70)return 'pos';
+  if(rate>=60)return '';
+  return 'neg';
+}
+
+/* ===== Team Table (desktop) + mobile list ===== */
+var tbody=document.getElementById('tableBody');
+var teamMobileHTML='';
+teamData.forEach(function(d){
+  tbody.innerHTML+='<tr>'+
+    '<td class="c-name">'+d.name+'</td>'+
+    '<td>'+d.claims+'</td>'+
+    '<td>'+d.cash.toLocaleString()+'</td>'+
+    '<td>'+d.target.toLocaleString()+'</td>'+
+    '<td class="'+rateClass(d.rate)+'">'+d.rate+'%</td>'+
+    '<td>'+(d.proj_rate||'')+'%</td>'+
+    '<td class="'+(d.bky_increment==null?'':d.bky_increment<0?'neg':'')+'">'+(d.bky_increment==null?'缺失':(d.bky_increment>=0?'+':'')+d.bky_increment)+'</td>'+
+    '<td>'+d.bky_rank+'</td>'+
+    '<td>'+coefBadge(d.bky_coef)+'</td>'+
+    '<td class="'+(d.yz_increment==null?'':d.yz_increment<0?'neg':'')+'">'+(d.yz_increment==null?'缺失':(d.yz_increment>=0?'+':'')+d.yz_increment)+'</td>'+
+    '<td>'+d.yz_rank+'</td>'+
+    '<td>'+coefBadge(d.yz_coef)+'</td>'+
+    '</tr>';
+
+  teamMobileHTML+='<div class="mobile-list-item">'+
+    '<div class="mli-head">'+
+      '<div class="mli-name">'+d.name+'</div>'+
+      '<div class="mli-rate '+rateClass(d.rate)+'">'+d.rate+'%</div>'+
+    '</div>'+
+    '<div class="mli-grid">'+
+      '<div class="mli-cell"><div class="mli-label">认领商业数</div><div class="mli-val">'+d.claims+'</div></div>'+
+      '<div class="mli-cell"><div class="mli-label">当月现金 / 目标(万)</div><div class="mli-val">'+d.cash.toLocaleString()+' / '+d.target.toLocaleString()+'</div></div>'+
+      '<div class="mli-cell"><div class="mli-label">预估达成率</div><div class="mli-val">'+(d.proj_rate||'-')+'%</div></div>'+
+      '<div class="mli-cell"><div class="mli-label">环比上月</div><div class="mli-val '+(d.mom>0?'c-green':d.mom<0?'c-red':'')+'">'+(d.mom>0?'+':'')+d.mom.toFixed(1)+'pp</div></div>'+
+      '<div class="mli-cell"><div class="mli-label">稀缺增量 / 排名 / 系数</div><div class="mli-val">'+(d.bky_increment==null?'缺失':(d.bky_increment>=0?'+':'')+d.bky_increment+' · #'+d.bky_rank+' · '+coefBadge(d.bky_coef))+'</div></div>'+
+      '<div class="mli-cell"><div class="mli-label">优质增量 / 排名 / 系数</div><div class="mli-val">'+(d.yz_increment==null?'缺失':(d.yz_increment>=0?'+':'')+d.yz_increment+' · #'+d.yz_rank+' · '+coefBadge(d.yz_coef))+'</div></div>'+
+    '</div></div>';
+});
+document.getElementById('teamMobileList').innerHTML=teamMobileHTML;
+
+/* ===== Province Table (desktop) + mobile list ===== */
+var ptbody=document.getElementById('provTableBody');
+var provMobileHTML='';
+provData.forEach(function(p){
+  var momArrow=p.mom_change>0?'↑':p.mom_change<0?'↓':'→';
+  var momCls=p.mom_change>0?'pos':p.mom_change<0?'neg':'';
+  ptbody.innerHTML+='<tr>'+
+    '<td class="c-name">'+p.name+'</td>'+
+    '<td class="c-name">'+p.负责人+'</td>'+
+    '<td>'+p.cash+'</td>'+
+    '<td>'+p.target+'</td>'+
+    '<td class="'+rateClass(p.rate)+'">'+p.rate+'%</td>'+
+    '<td>'+(p.proj_rate||'')+'%</td>'+
+    '<td>'+p.rate_rank+'</td>'+
+    '<td class="'+momCls+'">'+momArrow+Math.abs(p.mom_change).toFixed(1)+'pp</td>'+
+    '<td>'+p.mom_rank+'</td>'+
+    '<td class="'+(p.bky_inc<0?'neg':'')+'">'+(p.bky_inc>=0?'+':'')+p.bky_inc+'</td>'+
+    '<td>'+p.bky_rank+'</td>'+
+    '<td>'+coefBadge(p.bky_coef)+'</td>'+
+    '<td class="'+(p.yz_inc<0?'neg':'')+'">'+(p.yz_inc>=0?'+':'')+p.yz_inc+'</td>'+
+    '<td>'+p.yz_rank+'</td>'+
+    '<td>'+coefBadge(p.yz_coef)+'</td>'+
+    '</tr>';
+
+  provMobileHTML+='<div class="mobile-list-item">'+
+    '<div class="mli-head">'+
+      '<div><div class="mli-name">'+p.name+'</div><div class="pr-leader" style="font-size:11px;margin-top:2px">负责人: '+p.负责人+'</div></div>'+
+      '<div class="mli-rate '+rateClass(p.rate)+'">'+p.rate+'%</div>'+
+    '</div>'+
+    '<div class="mli-grid">'+
+      '<div class="mli-cell"><div class="mli-label">当月现金 / 目标(万)</div><div class="mli-val">'+p.cash+' / '+p.target+'</div></div>'+
+      '<div class="mli-cell"><div class="mli-label">预估达成率</div><div class="mli-val">'+(p.proj_rate||'-')+'%</div></div>'+
+      '<div class="mli-cell"><div class="mli-label">本月排名</div><div class="mli-val">#'+p.rate_rank+'</div></div>'+
+      '<div class="mli-cell"><div class="mli-label">同期对比</div><div class="mli-val '+momCls+'">'+momArrow+p.mom_change.toFixed(1)+'pp · #'+p.mom_rank+'</div></div>'+
+      '<div class="mli-cell"><div class="mli-label">稀缺增量 / 排名 / 系数</div><div class="mli-val '+(p.bky_inc<0?'neg':'')+'">'+(p.bky_inc>=0?'+':'')+p.bky_inc+' · #'+p.bky_rank+' · '+coefBadge(p.bky_coef)+'</div></div>'+
+      '<div class="mli-cell"><div class="mli-label">优质增量 / 排名 / 系数</div><div class="mli-val '+(p.yz_inc<0?'neg':'')+'">'+(p.yz_inc>=0?'+':'')+p.yz_inc+' · #'+p.yz_rank+' · '+coefBadge(p.yz_coef)+'</div></div>'+
+    '</div></div>';
+});
+document.getElementById('provMobileList').innerHTML=provMobileHTML;
+</script>
+</body>
+</html>
