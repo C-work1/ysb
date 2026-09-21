@@ -350,7 +350,7 @@ table.team-table td.c-name,.prov-table td.c-name{white-space:nowrap;}
     <button class="refresh-btn" onclick="refreshData()" id="refreshBtn">
       <span class="icon">🔄</span><span>刷新数据</span>
     </button>
-    <div class="last-update" id="lastUpdate">最后刷新: 2026-09-21 11:09</div>
+    <div class="last-update" id="lastUpdate">最后刷新: 2026-09-21 23:27</div>
   </div>
 </div>
 
@@ -452,7 +452,7 @@ table.team-table td.c-name,.prov-table td.c-name{white-space:nowrap;}
     <div class="supplier-grid" id="supplierYzGrid"></div>
   </div>
 
-  <div class="footer">AI团队业绩每日看板 · 自动生成于 2026-09-21 11:09 · 观远BI运营绩效看板</div>
+  <div class="footer">AI团队业绩每日看板 · 自动生成于 2026-09-21 23:27 · 观远BI运营绩效看板</div>
 </div>
 
 <script>
@@ -533,7 +533,7 @@ function refreshData(){
           status.textContent='❌ '+(s.error||'未知错误');
           setTimeout(function(){
             btn.innerHTML='<span class="icon">🔄</span><span>刷新数据</span>';
-            status.textContent='最后刷新: 2026-09-21 11:09';
+            status.textContent='最后刷新: 2026-09-21 23:27';
           },5000);
         }
       }).catch(function(){
