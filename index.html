@@ -350,7 +350,7 @@ table.team-table td.c-name,.prov-table td.c-name{white-space:nowrap;}
     <button class="refresh-btn" onclick="refreshData()" id="refreshBtn">
       <span class="icon">🔄</span><span>刷新数据</span>
     </button>
-    <div class="last-update" id="lastUpdate">最后刷新: 2026-09-28 23:35</div>
+    <div class="last-update" id="lastUpdate">最后刷新: 2026-09-28 23:48</div>
   </div>
 </div>
 
@@ -452,12 +452,12 @@ table.team-table td.c-name,.prov-table td.c-name{white-space:nowrap;}
     <div class="supplier-grid" id="supplierYzGrid"></div>
   </div>
 
-  <div class="footer">AI团队业绩每日看板 · 自动生成于 2026-09-28 23:35 · 观远BI运营绩效看板</div>
+  <div class="footer">AI团队业绩每日看板 · 自动生成于 2026-09-28 23:48 · 观远BI运营绩效看板</div>
 </div>
 
 <script>
 var teamData = [{"name": "张常绿", "cash": 3151.0, "target": 3937.0, "rate": 80.0, "prev_cash": 31425564.45, "bky_increment": 4.35, "bky_rank": 0, "yz_increment": -112, "yz_rank": "-", "bky_coef": 0, "yz_coef": 0, "claims": 10, "mom": 0.3, "proj_rate": 85.8}, {"name": "李月", "cash": 3902.0, "target": 4911.0, "rate": 79.5, "prev_cash": 35326441.18, "bky_increment": 26.9, "bky_rank": 13, "yz_increment": 90, "yz_rank": "6", "bky_coef": 1, "yz_coef": 1.5, "claims": 20, "mom": 10.5, "proj_rate": 85.1}, {"name": "温小玲", "cash": 2535.0, "target": 3765.0, "rate": 67.3, "prev_cash": 25139920.22, "bky_increment": 22.49, "bky_rank": 5, "yz_increment": 83, "yz_rank": "7", "bky_coef": 1.5, "yz_coef": 1.5, "claims": 18, "mom": 0.8, "proj_rate": 72.1}, {"name": "陈孝斌", "cash": 2555.0, "target": 3922.0, "rate": 65.2, "prev_cash": 26041240.84, "bky_increment": 3.08, "bky_rank": 9, "yz_increment": -12, "yz_rank": "15", "bky_coef": 1.5, "yz_coef": 0, "claims": 24, "mom": -1.9, "proj_rate": 69.8}, {"name": "孙培杰", "cash": 1107.0, "target": 1704.0, "rate": 65.0, "prev_cash": 11102205.68, "bky_increment": 17.19, "bky_rank": 3, "yz_increment": -36, "yz_rank": "21", "bky_coef": 1, "yz_coef": 0, "claims": 80, "mom": -0.2, "proj_rate": 69.6}, {"name": "梁芷轩", "cash": 1115.0, "target": 1754.0, "rate": 63.6, "prev_cash": 10376364.37, "bky_increment": 5.79, "bky_rank": 4, "yz_increment": 514, "yz_rank": "1", "bky_coef": 1, "yz_coef": 1.3, "claims": 90, "mom": 7.4, "proj_rate": 68.1}, {"name": "曾超", "cash": 907.0, "target": 1431.0, "rate": 63.4, "prev_cash": 9042696.02, "bky_increment": 6.96, "bky_rank": 0, "yz_increment": 1, "yz_rank": "-", "bky_coef": 0, "yz_coef": 0, "claims": 7, "mom": 0.3, "proj_rate": 67.9}, {"name": "林剑武", "cash": 1659.0, "target": 2714.0, "rate": 61.1, "prev_cash": 16348039.06, "bky_increment": 8.9, "bky_rank": 35, "yz_increment": 164, "yz_rank": "4", "bky_coef": 0, "yz_coef": 0.5, "claims": 23, "mom": 1.5, "proj_rate": 65.5}, {"name": "张温馨", "cash": 1675.0, "target": 2768.0, "rate": 60.5, "prev_cash": 19256250.47, "bky_increment": 20.67, "bky_rank": 30, "yz_increment": 25, "yz_rank": "12", "bky_coef": 0.3, "yz_coef": 1, "claims": 19, "mom": -13.0, "proj_rate": 64.8}];
-var provData = [{"name": "粤东+广西", "负责人": "曾超", "cash": 7786.0, "target": 12257.0, "rate": 63.5, "prev_rate": 69.5, "prev_same_rate": 62.8, "bky_inc": 0, "yz_inc": 195, "bky_coef": "", "yz_coef": 1.5, "bky_rank": "", "yz_rank": "4", "rate_rank": 2, "mom_rank": 2, "mom_change": 0.7, "proj_rate": 68.1}, {"name": "粤西", "负责人": "张常绿", "cash": 10981.0, "target": 15015.0, "rate": 73.1, "prev_rate": 77.3, "prev_same_rate": 69.8, "bky_inc": 0, "yz_inc": 741, "bky_coef": "", "yz_coef": 1.5, "bky_rank": "", "yz_rank": "3", "rate_rank": 1, "mom_rank": 1, "mom_change": 3.3, "proj_rate": 78.4}];
+var provData = [{"name": "粤东+广西", "负责人": "曾超", "cash": 7786.0, "target": 12257.0, "rate": 63.5, "prev_rate": 69.5, "prev_same_rate": 62.8, "bky_inc": 57.5, "yz_inc": 195, "bky_coef": "缺失", "yz_coef": 1.5, "bky_rank": "缺失", "yz_rank": "4", "rate_rank": 2, "mom_rank": 2, "mom_change": 0.7, "bky_agg_note": "运营汇总估算", "proj_rate": 68.1}, {"name": "粤西", "负责人": "张常绿", "cash": 10981.0, "target": 15015.0, "rate": 73.1, "prev_rate": 77.3, "prev_same_rate": 69.8, "bky_inc": 58.8, "yz_inc": 741, "bky_coef": "缺失", "yz_coef": 1.5, "bky_rank": "缺失", "yz_rank": "3", "rate_rank": 1, "mom_rank": 1, "mom_change": 3.3, "bky_agg_note": "运营汇总估算", "proj_rate": 78.4}];
 var supplierXqBky = {"top": [{"name": "[亮健药业]帮找药", "prov": "粤西", "op": "张常绿", "inc": 58}, {"name": "扬帆旗舰店", "prov": "粤西", "op": "温小玲", "inc": 36}, {"name": "健安医药", "prov": "粤东", "op": "温小玲", "inc": 30}, {"name": "御和康", "prov": "粤东", "op": "温小玲", "inc": 27}, {"name": "百年旗舰店", "prov": "粤西", "op": "张常绿", "inc": 23}, {"name": "宏洲旗舰店", "prov": "粤东", "op": "陈孝斌", "inc": 22}, {"name": "大聪明", "prov": "粤西", "op": "李月", "inc": 21}, {"name": "天慈健", "prov": "粤东", "op": "陈孝斌", "inc": 20}, {"name": "惠州瑞康", "prov": "粤东", "op": "温小玲", "inc": 20}, {"name": "仁济堂药业", "prov": "粤东", "op": "曾超", "inc": 18}]};
 var supplierXqYz  = {"top": [{"name": "[亮健药业]帮找药", "prov": "粤西", "op": "张常绿", "inc": 50}, {"name": "至远旗舰店", "prov": "粤西", "op": "张常绿", "inc": 25}, {"name": "百年旗舰店", "prov": "粤西", "op": "张常绿", "inc": 24}, {"name": "集药采", "prov": "粤西", "op": "李月", "inc": 21}, {"name": "宏洲旗舰店", "prov": "粤东", "op": "陈孝斌", "inc": 20}, {"name": "广东万洋", "prov": "粤西", "op": "李月", "inc": 17}, {"name": "扬帆旗舰店", "prov": "粤西", "op": "温小玲", "inc": 17}, {"name": "融泰广东", "prov": "粤西", "op": "李月", "inc": 17}, {"name": "仁济堂药业", "prov": "粤东", "op": "曾超", "inc": 16}, {"name": "红润堂旗舰店", "prov": "粤西", "op": "温小玲", "inc": 16}]};
 var supplierYz    = {"top": [{"name": "药正源", "prov": "广西", "op": "林剑武", "inc": 199}, {"name": "鑫药多旗舰店", "prov": "粤东", "op": "曾超", "inc": 148}, {"name": "好药司", "prov": "粤东", "op": "陈孝斌", "inc": 99}, {"name": "嘉洲云药房", "prov": "粤东", "op": "陈孝斌", "inc": 49}, {"name": "药集中旗舰店", "prov": "粤东", "op": "陈孝斌", "inc": 43}, {"name": "药飞飞", "prov": "粤东", "op": "陈孝斌", "inc": 40}, {"name": "大畅药业", "prov": "粤东", "op": "孙培杰", "inc": 39}, {"name": "广东振群", "prov": "粤西", "op": "张常绿", "inc": 35}, {"name": "广东嘉鑫", "prov": "粤西", "op": "梁芷轩", "inc": 31}, {"name": "桂药在线", "prov": "广西", "op": "林剑武", "inc": 29}], "bottom": [{"name": "药集云汇", "prov": "粤东", "op": "陈孝斌", "inc": -171}, {"name": "众药汇", "prov": "粤东", "op": "陈孝斌", "inc": -154}, {"name": "集药采", "prov": "粤西", "op": "李月", "inc": -101}, {"name": "红润堂旗舰店", "prov": "粤西", "op": "温小玲", "inc": -84}, {"name": "柏恩医药", "prov": "粤西", "op": "张常绿", "inc": -82}, {"name": "[亮健药业]帮找药", "prov": "粤西", "op": "张常绿", "inc": -82}, {"name": "金药坊旗舰店", "prov": "粤西", "op": "温小玲", "inc": -69}, {"name": "医药直通车", "prov": "粤西", "op": "张常绿", "inc": -66}, {"name": "药集市", "prov": "粤西", "op": "张温馨", "inc": -65}, {"name": "多惠捷", "prov": "粤东", "op": "曾超", "inc": -64}]};
@@ -533,7 +533,7 @@ function refreshData(){
           status.textContent='❌ '+(s.error||'未知错误');
           setTimeout(function(){
             btn.innerHTML='<span class="icon">🔄</span><span>刷新数据</span>';
-            status.textContent='最后刷新: 2026-09-28 23:35';
+            status.textContent='最后刷新: 2026-09-28 23:48';
           },5000);
         }
       }).catch(function(){
@@ -743,4 +743,4 @@ document.getElementById('provMobileList').innerHTML=provMobileHTML;
 </script>
 </body>
 </html>
-<!-- deploy-burst: 2026-09-28 23:35:41 -->
+<!-- deploy-burst: 2026-09-28 23:49:05 -->
