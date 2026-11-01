@@ -350,7 +350,7 @@ table.team-table td.c-name,.prov-table td.c-name{white-space:nowrap;}
     <button class="refresh-btn" onclick="refreshData()" id="refreshBtn">
       <span class="icon">🔄</span><span>刷新数据</span>
     </button>
-    <div class="last-update" id="lastUpdate">最后刷新: 2026-10-31 23:30</div>
+    <div class="last-update" id="lastUpdate">最后刷新: 2026-11-01 23:26</div>
   </div>
 </div>
 
@@ -381,10 +381,10 @@ table.team-table td.c-name,.prov-table td.c-name{white-space:nowrap;}
       <span class="time-bar-gap c-red">预估全月</span>
     </div>
     <div class="time-summary">
-      <div class="time-summary-item"><div class="ts-val c-red">7,498<span class="unit">万</span></div><div class="ts-label">现金流缺口</div></div>
-      <div class="time-summary-item"><div class="ts-val c-blue">18,766<span class="unit">万</span></div><div class="ts-label">预估月末金额</div></div>
+      <div class="time-summary-item"><div class="ts-val c-red">7,496<span class="unit">万</span></div><div class="ts-label">现金流缺口</div></div>
+      <div class="time-summary-item"><div class="ts-val c-blue">18,768<span class="unit">万</span></div><div class="ts-label">预估月末金额</div></div>
       <div class="time-summary-item"><div class="ts-val c-red">71.5%</div><div class="ts-label">预估达成率</div></div>
-      <div class="time-summary-item"><div class="ts-val c-red">0天</div><div class="ts-label">剩0天追7,498万</div></div>
+      <div class="time-summary-item"><div class="ts-val c-red">0天</div><div class="ts-label">剩0天追7,496万</div></div>
     </div>
   </div>
 
@@ -452,15 +452,15 @@ table.team-table td.c-name,.prov-table td.c-name{white-space:nowrap;}
     <div class="supplier-grid" id="supplierYzGrid"></div>
   </div>
 
-  <div class="footer">AI团队业绩每日看板 · 自动生成于 2026-10-31 23:30 · 观远BI运营绩效看板</div>
+  <div class="footer">AI团队业绩每日看板 · 自动生成于 2026-11-01 23:26 · 观远BI运营绩效看板</div>
 </div>
 
 <script>
-var teamData = [{"name": "孙培杰", "cash": 1396.0, "target": 1639.0, "rate": 85.2, "prev_cash": 12073190.2, "bky_increment": 47.24, "bky_rank": 3, "yz_increment": 86.92, "yz_rank": "9", "bky_coef": 1, "yz_coef": 0.8, "claims": 80, "mom": 15.6, "proj_rate": 85.2}, {"name": "张温馨", "cash": 2668.0, "target": 3414.0, "rate": 78.2, "prev_cash": 18036302.57, "bky_increment": 29.09, "bky_rank": 9, "yz_increment": 195.13, "yz_rank": "6", "bky_coef": 1.5, "yz_coef": 1.5, "claims": 18, "mom": 47.9, "proj_rate": 78.1}, {"name": "林剑武", "cash": 1888.0, "target": 2496.0, "rate": 75.6, "prev_cash": 18091514.57, "bky_increment": -5.09, "bky_rank": 35, "yz_increment": 75.73, "yz_rank": "11", "bky_coef": 0, "yz_coef": 0.5, "claims": 24, "mom": 4.4, "proj_rate": 75.6}, {"name": "温小玲", "cash": 2965.0, "target": 3962.0, "rate": 74.8, "prev_cash": 28308765, "bky_increment": 6.27, "bky_rank": 15, "yz_increment": -39.8, "yz_rank": "19", "bky_coef": 1, "yz_coef": 0, "claims": 18, "mom": 4.7, "proj_rate": 74.8}, {"name": "陈孝斌", "cash": 2709.0, "target": 3802.0, "rate": 71.3, "prev_cash": 28372537.87, "bky_increment": 41.11, "bky_rank": 17, "yz_increment": 267.65, "yz_rank": "5", "bky_coef": 1, "yz_coef": 1.5, "claims": 24, "mom": -4.5, "proj_rate": 71.3}, {"name": "李月", "cash": 2890.0, "target": 4281.0, "rate": 67.5, "prev_cash": 41052142.94, "bky_increment": 47.66, "bky_rank": 19, "yz_increment": 129.9, "yz_rank": "8", "bky_coef": 1, "yz_coef": 1.5, "claims": 21, "mom": -29.6, "proj_rate": 67.5}, {"name": "曾超", "cash": 886.0, "target": 1353.0, "rate": 65.5, "prev_cash": 9831590.66, "bky_increment": -7.58, "bky_rank": 0, "yz_increment": -56.34, "yz_rank": "-", "bky_coef": 0, "yz_coef": 0, "claims": 7, "mom": -9.9, "proj_rate": 65.5}, {"name": "张常绿", "cash": 2162.0, "target": 3355.0, "rate": 64.4, "prev_cash": 33916842.32, "bky_increment": 14.83, "bky_rank": 0, "yz_increment": -402.99, "yz_rank": "-", "bky_coef": 0, "yz_coef": 0, "claims": 10, "mom": -36.3, "proj_rate": 64.4}, {"name": "梁芷轩", "cash": 1029.0, "target": 1632.0, "rate": 63.0, "prev_cash": 11870551.06, "bky_increment": 14.92, "bky_rank": 9, "yz_increment": 613.08, "yz_rank": "1", "bky_coef": 0.8, "yz_coef": 1.3, "claims": 92, "mom": -13.3, "proj_rate": 63.1}];
-var provData = [{"name": "粤东+广西", "负责人": "曾超", "cash": 8588.0, "target": 11626.0, "rate": 73.9, "prev_rate": 69.5, "prev_same_rate": 71.8, "bky_inc": 114.1, "yz_inc": 267.46, "bky_coef": 1.5, "yz_coef": 1, "bky_rank": 2, "yz_rank": "6", "rate_rank": 1, "mom_rank": 1, "mom_change": 2.1, "proj_rate": 73.9}, {"name": "粤西", "负责人": "张常绿", "cash": 10178.0, "target": 14638.0, "rate": 69.5, "prev_rate": 78.7, "prev_same_rate": 81.3, "bky_inc": 76.33, "yz_inc": 457.12, "bky_coef": 1.5, "yz_coef": 1.5, "bky_rank": 7, "yz_rank": "3", "rate_rank": 8, "mom_rank": 19, "mom_change": -11.8, "proj_rate": 69.5}];
-var supplierXqBky = {"top": [{"name": "[亮健药业]帮找药", "prov": "粤西", "op": "张温馨", "inc": 68}, {"name": "御和康", "prov": "粤东", "op": "温小玲", "inc": 37}, {"name": "柏恩医药", "prov": "粤西", "op": "张常绿", "inc": 35}, {"name": "百年旗舰店", "prov": "粤西", "op": "张常绿", "inc": 32}, {"name": "健安医药", "prov": "粤东", "op": "温小玲", "inc": 27}, {"name": "多惠捷", "prov": "粤东", "op": "曾超", "inc": 27}, {"name": "融泰广东", "prov": "粤西", "op": "李月", "inc": 27}, {"name": "广州锦航", "prov": "粤西", "op": "张温馨", "inc": 19}, {"name": "宏洲旗舰店", "prov": "粤东", "op": "陈孝斌", "inc": 17}, {"name": "扬帆旗舰店", "prov": "粤西", "op": "温小玲", "inc": 17}]};
-var supplierXqYz  = {"top": [{"name": "[亮健药业]帮找药", "prov": "粤西", "op": "张温馨", "inc": 113}, {"name": "百年旗舰店", "prov": "粤西", "op": "张常绿", "inc": 45}, {"name": "集药采", "prov": "粤西", "op": "李月", "inc": 45}, {"name": "药优宝", "prov": "粤西", "op": "温小玲", "inc": 43}, {"name": "拼药多", "prov": "广西", "op": "林剑武", "inc": 38}, {"name": "柏恩医药", "prov": "粤西", "op": "张常绿", "inc": 37}, {"name": "至远旗舰店", "prov": "粤西", "op": "张常绿", "inc": 36}, {"name": "融泰广东", "prov": "粤西", "op": "李月", "inc": 36}, {"name": "药集云汇", "prov": "粤东", "op": "陈孝斌", "inc": 24}, {"name": "特药多", "prov": "粤西", "op": "张温馨", "inc": 24}]};
-var supplierYz    = {"top": [{"name": "药正源", "prov": "广西", "op": "林剑武", "inc": 214}, {"name": "好药司", "prov": "粤东", "op": "陈孝斌", "inc": 171}, {"name": "广东百康药业", "prov": "粤西", "op": "张温馨", "inc": 97}, {"name": "小药通旗舰店", "prov": "粤东", "op": "孙培杰", "inc": 82}, {"name": "宏洲旗舰店", "prov": "粤东", "op": "陈孝斌", "inc": 77}, {"name": "益草堂", "prov": "广西", "op": "林剑武", "inc": 77}, {"name": "药集中旗舰店", "prov": "粤东", "op": "陈孝斌", "inc": 60}, {"name": "广东嘉鑫", "prov": "粤西", "op": "梁芷轩", "inc": 58}, {"name": "华乐堂", "prov": "粤东", "op": "孙培杰", "inc": 57}, {"name": "药云采", "prov": "粤东", "op": "陈孝斌", "inc": 49}], "bottom": [{"name": "广东中天医药", "prov": "粤西", "op": "张温馨", "inc": -117}, {"name": "广东振群", "prov": "粤西", "op": "李月", "inc": -109}, {"name": "药康安", "prov": "广西", "op": "林剑武", "inc": -107}, {"name": "众药汇", "prov": "粤东", "op": "陈孝斌", "inc": -104}, {"name": "集药采", "prov": "粤西", "op": "李月", "inc": -97}, {"name": "多惠捷", "prov": "粤东", "op": "曾超", "inc": -95}, {"name": "金药坊旗舰店", "prov": "粤西", "op": "张常绿", "inc": -94}, {"name": "扬帆旗舰店", "prov": "粤西", "op": "温小玲", "inc": -85}, {"name": "百年旗舰店", "prov": "粤西", "op": "张常绿", "inc": -85}, {"name": "大聪明", "prov": "粤西", "op": "张常绿", "inc": -81}]};
+var teamData = [{"name": "孙培杰", "cash": 1396.0, "target": 1639.0, "rate": 85.2, "prev_cash": 12073190.2, "bky_increment": 47.24, "bky_rank": 3, "yz_increment": 86.92, "yz_rank": "9", "bky_coef": 1, "yz_coef": 0.8, "claims": 80, "mom": 15.6, "proj_rate": 85.2}, {"name": "张温馨", "cash": 2669.0, "target": 3414.0, "rate": 78.2, "prev_cash": 18036302.57, "bky_increment": 29.09, "bky_rank": 9, "yz_increment": 195.13, "yz_rank": "6", "bky_coef": 1.5, "yz_coef": 1.5, "claims": 18, "mom": 48.0, "proj_rate": 78.2}, {"name": "林剑武", "cash": 1890.0, "target": 2496.0, "rate": 75.7, "prev_cash": 18091514.57, "bky_increment": -3.35, "bky_rank": 35, "yz_increment": 77.13, "yz_rank": "11", "bky_coef": 0, "yz_coef": 0.5, "claims": 24, "mom": 4.5, "proj_rate": 75.7}, {"name": "温小玲", "cash": 2965.0, "target": 3962.0, "rate": 74.8, "prev_cash": 28308765, "bky_increment": 6.44, "bky_rank": 15, "yz_increment": -39.63, "yz_rank": "19", "bky_coef": 1, "yz_coef": 0, "claims": 18, "mom": 4.7, "proj_rate": 74.8}, {"name": "陈孝斌", "cash": 2709.0, "target": 3802.0, "rate": 71.3, "prev_cash": 28372537.87, "bky_increment": 41.11, "bky_rank": 17, "yz_increment": 267.65, "yz_rank": "5", "bky_coef": 1, "yz_coef": 1.5, "claims": 24, "mom": -4.5, "proj_rate": 71.3}, {"name": "李月", "cash": 2890.0, "target": 4281.0, "rate": 67.5, "prev_cash": 41052142.94, "bky_increment": 47.66, "bky_rank": 19, "yz_increment": 129.9, "yz_rank": "8", "bky_coef": 1, "yz_coef": 1.5, "claims": 21, "mom": -29.6, "proj_rate": 67.5}, {"name": "曾超", "cash": 886.0, "target": 1353.0, "rate": 65.5, "prev_cash": 9831590.66, "bky_increment": -7.58, "bky_rank": 0, "yz_increment": -56.34, "yz_rank": "-", "bky_coef": 0, "yz_coef": 0, "claims": 7, "mom": -9.9, "proj_rate": 65.5}, {"name": "张常绿", "cash": 2162.0, "target": 3355.0, "rate": 64.4, "prev_cash": 33916842.32, "bky_increment": 14.83, "bky_rank": 0, "yz_increment": -402.99, "yz_rank": "-", "bky_coef": 0, "yz_coef": 0, "claims": 10, "mom": -36.3, "proj_rate": 64.4}, {"name": "梁芷轩", "cash": 1029.0, "target": 1632.0, "rate": 63.0, "prev_cash": 11870551.06, "bky_increment": 15.31, "bky_rank": 8, "yz_increment": 613.45, "yz_rank": "1", "bky_coef": 0.8, "yz_coef": 1.3, "claims": 92, "mom": -13.3, "proj_rate": 63.1}];
+var provData = [{"name": "粤东+广西", "负责人": "曾超", "cash": 8590.0, "target": 11626.0, "rate": 73.9, "prev_rate": 69.5, "prev_same_rate": 71.8, "bky_inc": 116.23, "yz_inc": 269.23, "bky_coef": 1.5, "yz_coef": 1, "bky_rank": 2, "yz_rank": "6", "rate_rank": 1, "mom_rank": 1, "mom_change": 2.1, "proj_rate": 73.9}, {"name": "粤西", "负责人": "张常绿", "cash": 10178.0, "target": 14638.0, "rate": 69.5, "prev_rate": 78.7, "prev_same_rate": 81.3, "bky_inc": 76.5, "yz_inc": 457.29, "bky_coef": 1.5, "yz_coef": 1.5, "bky_rank": 7, "yz_rank": "3", "rate_rank": 8, "mom_rank": 19, "mom_change": -11.8, "proj_rate": 69.5}];
+var supplierXqBky = {"top": [{"name": "百年旗舰店", "prov": "粤西", "op": "张常绿", "inc": 0}, {"name": "大康华", "prov": "粤西", "op": "-", "inc": 0}, {"name": "东莞天德", "prov": "粤东", "op": "-", "inc": 0}, {"name": "药云采", "prov": "粤东", "op": "陈孝斌", "inc": 0}, {"name": "古方琪笑", "prov": "粤西", "op": "-", "inc": 0}, {"name": "深圳俊龙", "prov": "粤东", "op": "-", "inc": 0}, {"name": "药速配", "prov": "粤东", "op": "李月", "inc": 0}, {"name": "深圳明华堂", "prov": "粤东", "op": "孙培杰", "inc": 0}, {"name": "广州龙祥", "prov": "粤西", "op": "温小玲", "inc": 0}, {"name": "广州锦航", "prov": "粤西", "op": "张温馨", "inc": 0}]};
+var supplierXqYz  = {"top": [{"name": "百年旗舰店", "prov": "粤西", "op": "张常绿", "inc": 0}, {"name": "大康华", "prov": "粤西", "op": "-", "inc": 0}, {"name": "东莞天德", "prov": "粤东", "op": "-", "inc": 0}, {"name": "药云采", "prov": "粤东", "op": "陈孝斌", "inc": 0}, {"name": "古方琪笑", "prov": "粤西", "op": "-", "inc": 0}, {"name": "深圳俊龙", "prov": "粤东", "op": "-", "inc": 0}, {"name": "药速配", "prov": "粤东", "op": "李月", "inc": 0}, {"name": "深圳明华堂", "prov": "粤东", "op": "孙培杰", "inc": 0}, {"name": "广州龙祥", "prov": "粤西", "op": "温小玲", "inc": 0}, {"name": "广州锦航", "prov": "粤西", "op": "张温馨", "inc": 0}]};
+var supplierYz    = {"top": [{"name": "百年旗舰店", "prov": "粤西", "op": "张常绿", "inc": 0}, {"name": "大康华", "prov": "粤西", "op": "-", "inc": 0}, {"name": "东莞天德", "prov": "粤东", "op": "-", "inc": 0}, {"name": "药云采", "prov": "粤东", "op": "陈孝斌", "inc": 0}, {"name": "古方琪笑", "prov": "粤西", "op": "-", "inc": 0}, {"name": "深圳俊龙", "prov": "粤东", "op": "-", "inc": 0}, {"name": "药速配", "prov": "粤东", "op": "李月", "inc": 0}, {"name": "深圳明华堂", "prov": "粤东", "op": "孙培杰", "inc": 0}, {"name": "广州龙祥", "prov": "粤西", "op": "温小玲", "inc": 0}, {"name": "广州锦航", "prov": "粤西", "op": "张温馨", "inc": 0}], "bottom": [{"name": "广西毕生医药集团", "prov": "广西", "op": "-", "inc": 0}, {"name": "梅州康源泰医药", "prov": "粤东", "op": "-", "inc": 0}, {"name": "泽源医药", "prov": "广西", "op": "林剑武", "inc": 0}, {"name": "药在线", "prov": "粤西", "op": "梁芷轩", "inc": 0}, {"name": "国药新邦", "prov": "粤西", "op": "梁芷轩", "inc": 0}, {"name": "广西元贞药业", "prov": "广西", "op": "-", "inc": 0}, {"name": "广东万宸药业", "prov": "粤西", "op": "梁芷轩", "inc": 0}, {"name": "鑫锐药业", "prov": "粤东", "op": "-", "inc": 0}, {"name": "广州市番康药业", "prov": "粤西", "op": "梁芷轩", "inc": 0}, {"name": "小通药大健康", "prov": "粤东", "op": "孙培杰", "inc": 0}]};
 
 var blue='#2E75B6',green='#10B981',orange='#F59E0B',red='#EF4444',ink700='#334155';
 var names=teamData.map(function(d){return d.name;});
@@ -469,12 +469,12 @@ var names=teamData.map(function(d){return d.name;});
 (function(){
   var cashColor = total_rate_var = '71.5';
   var kpis=[
-    {label:'团队当月现金',value:'18,766',unit:'万',sub:'目标 26,264万',cls:'kpi-primary'},
-    {label:'当前达成率',value:'71.5',unit:'%',sub:'距目标差 7,498万',cls:'kpi-orange'},
-    {label:'日均现金',value:'605',unit:'万',sub:'日均 × 31天 = 18,766万',cls:'kpi-blue'},
-    {label:'预估达成率',value:'71.5',unit:'%',sub:'预估全月 18,766 / 26,264万',cls:'kpi-red'},
+    {label:'团队当月现金',value:'18,768',unit:'万',sub:'目标 26,264万',cls:'kpi-primary'},
+    {label:'当前达成率',value:'71.5',unit:'%',sub:'距目标差 7,496万',cls:'kpi-orange'},
+    {label:'日均现金',value:'605',unit:'万',sub:'日均 × 31天 = 18,768万',cls:'kpi-blue'},
+    {label:'预估达成率',value:'71.5',unit:'%',sub:'预估全月 18,768 / 26,264万',cls:'kpi-red'},
     {label:'0.7倍基准线',value:'70.0',unit:'%',sub:'vs 达成率 +1.5pp',cls:'kpi-green'},
-    {label:'现金缺口',value:'7,498',unit:'万',sub:'落后 -28.5pp',cls:'kpi-red'}
+    {label:'现金缺口',value:'7,496',unit:'万',sub:'落后 -28.5pp',cls:'kpi-red'}
   ];
   var h='';
   kpis.forEach(function(k){
@@ -533,7 +533,7 @@ function refreshData(){
           status.textContent='❌ '+(s.error||'未知错误');
           setTimeout(function(){
             btn.innerHTML='<span class="icon">🔄</span><span>刷新数据</span>';
-            status.textContent='最后刷新: 2026-10-31 23:30';
+            status.textContent='最后刷新: 2026-11-01 23:26';
           },5000);
         }
       }).catch(function(){
@@ -743,4 +743,4 @@ document.getElementById('provMobileList').innerHTML=provMobileHTML;
 </script>
 </body>
 </html>
-<!-- deploy-burst: 2026-10-31 23:30:50 -->
+<!-- deploy-burst: 2026-11-01 23:26:43 -->
